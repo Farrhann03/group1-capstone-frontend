@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useRef, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import COLORS from "../consts/colors";
-import recommend from "../consts/recommended";
+//import recommend from "../consts/recommended";
 import API from "./Api";
 const {width} = Dimensions.get('screen');
 
@@ -36,7 +36,7 @@ const HomeScreen = ({navigation, route}) => {
 
 
         const changeHandler = (val) => {
-            setName(val);
+            setName(val.toUpperCase());
         }
 
     const [currentTab, setCurrentTab] = useState("Home");
@@ -270,7 +270,7 @@ const logOut = () => {
                         contentContainerStyle={{paddingLeft: 20}}
                         //horizontal
                         //showsVerticalScrollIndicator={false}
-                        data={places}
+                        data={places.filter(place=>place.name.toUpperCase().includes(name))}
                         renderItem={({item}) => <Card place={item} />} 
                         // refreshControl={
                         //     <RefreshControl
