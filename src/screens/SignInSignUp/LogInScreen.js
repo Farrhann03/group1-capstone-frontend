@@ -78,6 +78,7 @@ const LogInScreen = ({navigation}) => {
             navigation.push("HomeScreen", requestData);
             Alert.alert("Logged in successfully");
             console.log("Logged in successfully", JSON.stringify({...userData, loggedIn: true}));
+            console.log(userData.data.id)
         }catch(e){
             Alert.alert("Logged in failed");
             console.error("Logged in failed", JSON.stringify(e, {...userData, loggedIn: false}));
@@ -95,6 +96,7 @@ const LogInScreen = ({navigation}) => {
     const handleError = (errorMessage, input,) => {
         setErrors((prevState) => ({...prevState, [input]: errorMessage}));
     };
+
 
     return (
     <SafeAreaView style={styles.container}>

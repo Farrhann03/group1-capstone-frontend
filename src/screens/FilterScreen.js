@@ -22,7 +22,7 @@ import Button from "./SignInSignUp/components/Button";
 const {width} = Dimensions.get('screen');
 
 
-const FilterScreen = ({ navigation, route }) => {
+const FilterScreen = ({ navigation }) => {
   
   const [record, setRecord] = useState([]);
   const [chooseLoc, setchooseLoc] = useState("");
@@ -34,8 +34,6 @@ const FilterScreen = ({ navigation, route }) => {
   const [isPriModalVisible, setisPriModalVisible] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false);
-  const place = route.params;
-
 
   const searchRecords = async () => {
     await API
@@ -213,13 +211,9 @@ const FilterScreen = ({ navigation, route }) => {
           />
           <View>
             <Button title="Search" onPress={searchRecords}/>
-            <Text style={style.footer}>Pull down to see RefreshControl indicator</Text>
+            {/* <Text style={style.footer}>Pull down to see RefreshControl indicator</Text> */}
           </View>
-
-
         </ImageBackground>
-
-      
     </SafeAreaView>
   );
 };
@@ -233,7 +227,7 @@ const style = StyleSheet.create({
     marginVertical: 20,
     fontSize: 19,
     color: COLORS.primary2,
-    fontWeight: "bold",
+    
   },
   touchableOpacity: {
     backgroundColor: COLORS.white,
