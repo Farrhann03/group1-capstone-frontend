@@ -1,6 +1,4 @@
-import axios from 'axios';
 import React from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView, StyleSheet, ScrollView, Text, View, Alert } from "react-native";
 import COLORS from '../consts/colors';
 import ReviewInput from './SignInSignUp/components/ReviewInput';
@@ -57,6 +55,9 @@ const SubmitReviewScreen = ({navigation, route}) => {
         }
         setLoading(false);
     };
+
+    console.log(place.id)
+    console.log(requestData.id)
 
     return (
         <SafeAreaView style={styles.container}>

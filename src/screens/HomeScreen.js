@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useRef, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import COLORS from "../consts/colors";
-import recommend from "../consts/recommended";
+//import recommend from "../consts/recommended";
 import API from "./Api";
 const {width} = Dimensions.get('screen');
 
@@ -12,13 +12,32 @@ const {width} = Dimensions.get('screen');
 const HomeScreen = ({navigation, route}) => {
 
     const [places, setPlaces] = useState([]);
+    const [name, setName] = useState("");
+    const [refreshing, setRefreshing] = useState(false);
 
-    useEffect(() => {
-      API.get("/public/location")
-        .then((res) => res.data)
-        .then((data) => setPlaces(data));
-    }, []);
+    const searchRecords = async () => {
+        await API
+        .get(`/public/location/${name}`)
+          .then((res) => res.data)
+          .then((data) => {
+            setRefreshing(false);
+            setPlaces(data)});
+            setTimeout(() => {
+                setRefreshing(false)
+              }, 2000) 
+      
+            
+      };
+        useEffect(() => {
+            API.get(`/public/location/`)
+            .then((res) => res.data)
+            .then((data) => setPlaces(data));
+        }, []);
 
+
+        const changeHandler = (val) => {
+            setName(val.toUpperCase());
+        }
 
     const [currentTab, setCurrentTab] = useState("Home");
     // To get the curretn Status of menu ...
@@ -31,10 +50,10 @@ const HomeScreen = ({navigation, route}) => {
     const scaleValue = useRef(new Animated.Value(1)).current;
     const closeButtonOffset = useRef(new Animated.Value(0)).current;
     const categoryIcons = [
-        <Icon name="fastfood" size={25} color={COLORS.primary2} />,
-        <Icon name="local-offer" size={25} color={COLORS.primary2} />,
-        <Icon name="help" size={25} color={COLORS.primary2} />,
-        <Icon name="favorite" size={25} color={COLORS.primary2} />,
+        // <Icon name="fastfood" size={25} color={COLORS.primary2} />,
+        // <Icon name="local-offer" size={25} color={COLORS.primary2} />,
+        // <Icon name="help" size={25} color={COLORS.primary2} />,
+        // <Icon name="favorite" size={25} color={COLORS.primary2} />,
     ];
     const ListCategories = () => {
         return <View style={style.categoryContainer}>
@@ -50,7 +69,7 @@ const Card = ({place}) => {
     return (
         <TouchableOpacity activeOpacity={0.8} onPress={()=>navigation.navigate("DetailsScreen", place)}>
         <ImageBackground
-            style={style.cardImage}
+            style={style.rmCardImage}
             source={{uri:place.image}}
             imageStyle={{opacity: 0.7}}>
                 <Text 
@@ -87,47 +106,48 @@ const Card = ({place}) => {
         </TouchableOpacity>
     )
  }
-
- const RecommendedCard = ({recommend}) => {
-     return (
-        <ImageBackground 
-            style={style.rmCardImage} 
-            source={recommend.image}
-            imageStyle={{opacity: 0.7}}>
-            <Text 
-                style={{
-                    color: COLORS.white, 
-                    fontSize: 22, 
-                    fontWeight: 'bold',
-                    marginTop: 10,
-                    }}>
-                {recommend.name}
-            </Text>
-            <View 
-                style={{
-                    flex: 1,
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                    }}>
-                <View style={{width: '100%', flexDirection: 'row', marginTop: 10}}>
-                <View style={{flexDirection: 'row'}}>
-                    <Icon name='place' size={22} color={COLORS.white} />
-                    <Text style={{color: COLORS.white, marginLeft: 5}}>
-                        {recommend.location}
-                    </Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <Icon name='star' size={22} color={COLORS.white} />
-                    <Text style={{color: COLORS.white, marginLeft: 5}}>{recommend.rating}</Text>
-                </View>
-                </View> 
-                <Text style={{color: COLORS.white, fontSize: 13}}>
-                    {recommend.details}
-                </Text>                      
-            </View>
-        </ImageBackground>
-     )
- }
+ 
+//  const RecommendedCard = ({recommend}) => {
+    
+//      return (
+//         <ImageBackground 
+//             style={style.rmCardImage} 
+//             source={recommend.image}
+//             imageStyle={{opacity: 0.7}}>
+//             <Text 
+//                 style={{
+//                     color: COLORS.white, 
+//                     fontSize: 22, 
+//                     fontWeight: 'bold',
+//                     marginTop: 10,
+//                     }}>
+//                 {recommend.name}
+//             </Text>
+//             <View 
+//                 style={{
+//                     flex: 1,
+//                     justifyContent: 'space-between',
+//                     alignItems: 'flex-end',
+//                     }}>
+//                 <View style={{width: '100%', flexDirection: 'row', marginTop: 10}}>
+//                 <View style={{flexDirection: 'row'}}>
+//                     <Icon name='place' size={22} color={COLORS.white} />
+//                     <Text style={{color: COLORS.white, marginLeft: 5}}>
+//                         {recommend.location}
+//                     </Text>
+//                 </View>
+//                 <View style={{flexDirection: 'row'}}>
+//                     <Icon name='star' size={22} color={COLORS.white} />
+//                     <Text style={{color: COLORS.white, marginLeft: 5}}>{recommend.rating}</Text>
+//                 </View>
+//                 </View> 
+//                 <Text style={{color: COLORS.white, fontSize: 13}}>
+//                     {recommend.details}
+//                 </Text>                      
+//             </View>
+//         </ImageBackground>
+//      )
+//  }
 
  //route takes in paramaters passed from login
 const requestData = route.params
@@ -207,15 +227,18 @@ const logOut = () => {
                     .start()
 
             setShowMenu(!showMenu);
-        }}>
-            
-
+            }}>
             <Icon name="person" size={28} color={COLORS.white}/>
         </TouchableOpacity>
         <Image style={{width: 17, height: 30, marginTop: 22}} source={require("../assets/Suppermakanapa-icon.png")} />
-        <Icon style={{marginTop: 20, marginRight: 5 }} name="filter-alt" size={28} color={COLORS.white} onPress={()=>navigation.navigate("FilterScreen", places)} />
+        <Icon 
+            style={{marginTop: 20, marginRight: 5 }} 
+            name="filter-alt" size={28} color={COLORS.white} 
+            onPress={()=>navigation.navigate("FilterScreen", places)} 
+            />
     </View>
-        <ScrollView showsVerticalScrollIndicator={false}>
+
+        {/* <ScrollView> */}
             <View 
                 style={{
                     backgroundColor:COLORS.primary2, 
@@ -226,35 +249,46 @@ const logOut = () => {
                     <Text style={style.headerTitle}>Fulfil your</Text>
                     <Text style={style.headerTitle}>midnight cravings</Text>
                     <View style={style.inputContainer}>
-                    <Icon name='search' size={28} />
+                    <Icon name='search' size={28} onPress={() => {
+                        searchRecords(name) 
+                        setName("")}} title="Search" />
                     <TextInput 
                         placeholder="Search Restaurants"
+                        onChangeText={changeHandler}
+                        value={name}
                         style={{color: COLORS.grey}}
                         />
+                       
                     </View>
                 </View>
             </View>
-        <ListCategories />
+        {/* <ListCategories /> */}
             <Text style={style.sectionTitle}>Restaurants</Text>
             <View>
-                <FlatList 
-                    contentContainerStyle={{paddingLeft: 20}}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    data={places}
-                    renderItem={({item}) => <Card place={item} />} 
-                    
-                />
-                <Text style={style.sectionTitle}>Recommended</Text>
-                <FlatList 
-                    snapToInterval={width - 20}
-                    contentContainerStyle={{paddingLeft: 20, paddingBottom: 20}}
-                    showsHorizontalScrollIndicator={false}
-                    horizontal
-                    data={recommend} 
-                    renderItem={({item}) => <RecommendedCard recommend={item}/>} />
+                
+                    <FlatList 
+                        contentContainerStyle={{paddingLeft: 20}}
+                        //horizontal
+                        //showsVerticalScrollIndicator={false}
+                        data={places.filter(place=>place.name.toUpperCase().includes(name))}
+                        renderItem={({item}) => <Card place={item} />} 
+                        // refreshControl={
+                        //     <RefreshControl
+                        //       refreshing={refreshing}
+                        //       onRefresh={() => searchRecords()}
+                        //     />}
+                    />
+                    {/* <Text style={style.sectionTitle}>Recommended</Text>
+                    <FlatList 
+                        snapToInterval={width - 20}
+                        contentContainerStyle={{paddingLeft: 20, paddingBottom: 20}}
+                        showsHorizontalScrollIndicator={false}
+                        horizontal
+                        data={recommend} 
+                        renderItem={({item}) => <RecommendedCard recommend={item}/>} /> */}
+                
             </View>
-            </ScrollView>
+            {/* </ScrollView> */}
         </Animated.View>
     </SafeAreaView>;
 
@@ -315,6 +349,7 @@ const style = StyleSheet.create({
     sectionTitle: {
         marginHorizontal: 20,
         marginVertical: 20,
+        paddingTop: 30,
         fontWeight: 'bold',
         fontSize: 20,
     },
@@ -331,6 +366,7 @@ const style = StyleSheet.create({
         width: width - 40,
         height: 200,
         marginRight: 20,
+        marginBottom: 20,
         borderRadius: 10, 
         overflow: 'hidden',
         padding: 10,
