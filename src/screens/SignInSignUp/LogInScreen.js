@@ -38,6 +38,7 @@ const LogInScreen = ({navigation}) => {
 
         if (valid) {
             logIn();
+            
         }
     };
 
@@ -72,9 +73,9 @@ const LogInScreen = ({navigation}) => {
                 password:inputs.password
             }
             const userData = await API.post("/login/signin", requestData);
-            console.log(requestData)
+            console.log(requestData.username)
             //pass requestData as props to homescreen
-            navigation.navigate("HomeScreen", requestData);
+            navigation.push("HomeScreen", requestData);
             Alert.alert("Logged in successfully");
             console.log("Logged in successfully", JSON.stringify({...userData, loggedIn: true}));
         }catch(e){

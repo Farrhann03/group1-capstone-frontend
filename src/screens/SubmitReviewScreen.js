@@ -6,11 +6,14 @@ import Button from './SignInSignUp/components/Button';
 import Loader from './SignInSignUp/components/Loader';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import API from './Api';
+import { DrawerContentScrollView } from '@react-navigation/drawer';
 
 const SubmitReviewScreen = ({navigation, route}) => {
 
     const place = route.params;
-    const requestData = route.params;
+    const userData = route.params;
+
+    console.log(userData.id);
 
     const [submitReview, setSubmitReview] = React.useState({
         location_id: "",
@@ -45,7 +48,7 @@ const SubmitReviewScreen = ({navigation, route}) => {
         try {
             const requestReviewData = {
                 location_id: place.id,
-                user_id: requestData.id,
+                user_id: userData.id,
                 review: submitReview.review,
             }
             await API.post("/user/newreview", requestReviewData);
