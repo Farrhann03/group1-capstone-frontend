@@ -1,4 +1,4 @@
-import { SafeAreaView, StatusBar, RefreshControl, StyleSheet, View, ScrollView, Button, Text, ImageBackground, FlatList, TextInput, Dimensions, Animated, Image } from "react-native";
+import { SafeAreaView, StatusBar, StyleSheet, View, ScrollView, Text, ImageBackground, FlatList, TextInput, Dimensions, Animated, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useRef, useEffect, useState } from "react";
