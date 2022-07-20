@@ -1,19 +1,21 @@
 import { SafeAreaView, StatusBar, StyleSheet, View, ScrollView, Text, ImageBackground, FlatList, TextInput, Dimensions, Animated, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import COLORS from "../consts/colors";
 //import recommend from "../consts/recommended";
 import API from "./Api";
+import { UserContext } from './Usercontext';
 const {width} = Dimensions.get('screen');
 
 //route is passed as params
 const HomeScreen = ({navigation, route}) => {
-    
+    //const userDetails = useContext(userDetailsContext)
     const [places, setPlaces] = useState([]);
     const [name, setName] = useState("");
     const [refreshing, setRefreshing] = useState(false);
+    const {inputs} = React.useContext(UserContext)
 
     const searchRecords = async () => {
         await API
@@ -164,14 +166,15 @@ const requestData = route.params
 //     console.log(userData)
     
 // };
-console.log(requestData)
+//console.log(userDetails)
+
 const logOut = () => {
     API.post("/user/signout", requestData);
     AsyncStorage.setItem(
-        'user',
+        'null',
         JSON.stringify({...requestData, loggedIn: false}),
     );
-    navigation.navigate("LogInScreen");
+    navigation.push("LogInScreen");
 };
 
     return  <SafeAreaView style={{flex:1, backgroundColor: COLORS.primary2}}>

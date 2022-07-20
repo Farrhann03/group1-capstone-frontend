@@ -25,11 +25,7 @@ const DetailsScreen = ({ navigation, route }) => {
       });
   }, []);
 
-  const place = route.params;
-  const requestData = route.params;
-
-  console.log(place)
-  console.log(requestData?.username)
+  const place = route.params;  
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
