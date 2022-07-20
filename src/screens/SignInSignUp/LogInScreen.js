@@ -7,15 +7,18 @@ import Button from '../SignInSignUp/components/Button';
 import Loader from '../SignInSignUp/components/Loader';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import API from '../Api';
+import { UserContext } from '../Usercontext';
 
 const LogInScreen = ({navigation}) => {
 
     //inputs for fields
-    const [inputs, setInputs] = React.useState({
-        username: "",
-        email: "",
-        password: "",
-    });
+    const {inputs, setInputs} = React.useContext(UserContext
+        // {
+        // username: "",
+        // email: "",
+        // password: "",
+        // }
+    );
 
     //input errors
     const [errors, setErrors] = React.useState({});
@@ -38,6 +41,7 @@ const LogInScreen = ({navigation}) => {
 
         if (valid) {
             logIn();
+            
         }
     };
 
@@ -68,16 +72,18 @@ const LogInScreen = ({navigation}) => {
         
         try{
             const requestData = {
+                
                 username:inputs.username,
                 password:inputs.password
             }
             const userData = await API.post("/login/signin", requestData);
-            console.log(requestData)
+            
             //pass requestData as props to homescreen
-            navigation.navigate("HomeScreen", requestData);
+            navigation.push("HomeScreen", requestData);
+            setInputs(userData.data.id)
             Alert.alert("Logged in successfully");
             console.log("Logged in successfully", JSON.stringify({...userData, loggedIn: true}));
-            console.log(userData.data.id)
+            //console.log(userData)
         }catch(e){
             Alert.alert("Logged in failed");
             console.error("Logged in failed", JSON.stringify(e, {...userData, loggedIn: false}));
@@ -96,14 +102,14 @@ const LogInScreen = ({navigation}) => {
         setErrors((prevState) => ({...prevState, [input]: errorMessage}));
     };
 
-
+    //console.log(inputs)
     return (
     <SafeAreaView style={styles.container}>
         <Icon 
           name="arrow-back-ios" 
           size={28} 
           color={COLORS.primary2} 
-          onPress={() => navigation.navigate("HomeScreen")}
+          onPress={() => navigation.push("HomeScreen")}
           style={{paddingLeft: 10}}
         />
         <Loader  visible={loading}/>
@@ -111,10 +117,11 @@ const LogInScreen = ({navigation}) => {
             <Text style={styles.textHeader}>Login</Text>
             <Text style={styles.textSubHeader}>Enter Login Details.</Text>
             <View style={{marginVertical: 20}}>
-                <Input placeholder="Enter your username" iconName="account-outline" label="Username" error={errors.username} onFocus={() => { handleError(null, "username");}} onChangeText={(text) => handleOnChange(text, 'username')}/>
+                <Input placeholder="Enter your username" iconName="account-outline" label="Username" error={errors.username} onFocus={() => { handleError(null, "username");}} onChangeText={(text) => handleOnChange(text, 'username')} username/>
                 <Input placeholder="Enter your password" iconName="lock-outline" label="Password" error={errors.password} onFocus={() => { handleError(null, "password");}} onChangeText={(text) => handleOnChange(text, 'password')} password />
                 <Button  title="Login" onPress={validate} />
                 <Text>
+                    {/* <pre>{JSON.stringify(inputs, null, 2)}</pre> */}
                     <Text style={styles.loginsubText}>Yet to create an account?</Text>
                     <Text onPress={() => navigation.navigate('SignUpScreen')} style={styles.loginText}>Sign Up</Text>
                 </Text>

@@ -6,11 +6,13 @@ import Button from './SignInSignUp/components/Button';
 import Loader from './SignInSignUp/components/Loader';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import API from './Api';
+import { DrawerContentScrollView } from '@react-navigation/drawer';
+import { UserContext } from './Usercontext';
 
 const SubmitReviewScreen = ({navigation, route}) => {
 
     const place = route.params;
-    const requestData = route.params;
+    const {inputs} = React.useContext(UserContext)
 
     const [submitReview, setSubmitReview] = React.useState({
         location_id: "",
@@ -45,7 +47,7 @@ const SubmitReviewScreen = ({navigation, route}) => {
         try {
             const requestReviewData = {
                 location_id: place.id,
-                user_id: requestData.id,
+                user_id: inputs,
                 review: submitReview.review,
             }
             await API.post("/user/newreview", requestReviewData);
@@ -57,7 +59,7 @@ const SubmitReviewScreen = ({navigation, route}) => {
     };
 
     console.log(place.id)
-    console.log(requestData.id)
+    console.log(inputs)
 
     return (
         <SafeAreaView style={styles.container}>

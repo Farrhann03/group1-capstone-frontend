@@ -1,19 +1,21 @@
 import { SafeAreaView, StatusBar, StyleSheet, View, ScrollView, Text, ImageBackground, FlatList, TextInput, Dimensions, Animated, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import COLORS from "../consts/colors";
 //import recommend from "../consts/recommended";
 import API from "./Api";
+import { UserContext } from './Usercontext';
 const {width} = Dimensions.get('screen');
 
 //route is passed as params
 const HomeScreen = ({navigation, route}) => {
-
+    //const userDetails = useContext(userDetailsContext)
     const [places, setPlaces] = useState([]);
     const [name, setName] = useState("");
     const [refreshing, setRefreshing] = useState(false);
+    const {inputs} = React.useContext(UserContext)
 
     const searchRecords = async () => {
         await API
@@ -25,9 +27,7 @@ const HomeScreen = ({navigation, route}) => {
             setTimeout(() => {
                 setRefreshing(false)
               }, 2000) 
-      
-            
-      };
+        };
         useEffect(() => {
             API.get(`/public/location/`)
             .then((res) => res.data)
@@ -152,25 +152,29 @@ const Card = ({place}) => {
  //route takes in paramaters passed from login
 const requestData = route.params
 
-const [userDetails, setUserDetails] = React.useState();
-React.useEffect(() => {
-    getUserDetails();
-}, []);
-const getUserDetails = async () => {
-    const userData = await API.get("/user", userDetails);
-    AsyncStorage.getItem('user');
-    if (userData) {
-        setUserDetails(requestData);
-    }
-};
+// const [userDetails, setUserDetails] = useState();
+
+// useEffect(() => {
+//     getUserDetails();
+// }, []);
+// const getUserDetails = async () => {
+//     const userData = await API.get("/login/user", userDetails);
+//     AsyncStorage.getItem();
+//     if (userData) {
+//         setUserDetails(requestData);
+//     }
+//     console.log(userData)
+    
+// };
+//console.log(userDetails)
 
 const logOut = () => {
     API.post("/user/signout", requestData);
     AsyncStorage.setItem(
-        'user',
+        'null',
         JSON.stringify({...requestData, loggedIn: false}),
     );
-    navigation.navigate("LogInScreen");
+    navigation.push("LogInScreen");
 };
 
     return  <SafeAreaView style={{flex:1, backgroundColor: COLORS.primary2}}>
@@ -229,8 +233,9 @@ const logOut = () => {
             setShowMenu(!showMenu);
             }}>
             <Icon name="person" size={28} color={COLORS.white}/>
+            <Text style={style.accountContainerText}>{requestData?.username}</Text>
         </TouchableOpacity>
-        <Image style={{width: 17, height: 30, marginTop: 22}} source={require("../assets/Suppermakanapa-icon.png")} />
+        <Image style={{width: 17, height: 30}} source={require("../assets/Suppermakanapa-icon.png")} />
         <Icon 
             style={{marginTop: 20, marginRight: 5 }} 
             name="filter-alt" size={28} color={COLORS.white} 
