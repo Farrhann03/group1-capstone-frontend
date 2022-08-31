@@ -6,11 +6,10 @@ import Button from './SignInSignUp/components/Button';
 import Loader from './SignInSignUp/components/Loader';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import API from './Api';
-import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { UserContext } from './Usercontext';
 
 const SubmitReviewScreen = ({navigation, route}) => {
-
+    const record = route.params;
     const place = route.params;
     const {inputs} = React.useContext(UserContext)
 
@@ -49,6 +48,7 @@ const SubmitReviewScreen = ({navigation, route}) => {
 
         try {
             const requestReviewData = {
+                record_id: record.id,
                 location_id: place.id,
                 user_id: inputs,
                 review: submitReview.review,
