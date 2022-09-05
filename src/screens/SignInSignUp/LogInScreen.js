@@ -1,5 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React from 'react';
+import {useState, useContext} from 'react';
 import { SafeAreaView, StyleSheet, ScrollView, Text, View, Alert, Keyboard } from "react-native";
 import COLORS from '../../consts/colors';
 import Input from '../SignInSignUp/components/Input';
@@ -12,7 +11,7 @@ import { UserContext } from '../Usercontext';
 const LogInScreen = ({navigation}) => {
 
     //inputs for fields
-    const {inputs, setInputs} = React.useContext(UserContext
+    const {inputs, setInputs} = useContext(UserContext
         // {
         // username: "",
         // email: "",
@@ -21,10 +20,10 @@ const LogInScreen = ({navigation}) => {
     );
 
     //input errors
-    const [errors, setErrors] = React.useState({});
+    const [errors, setErrors] = useState({});
 
     //handle loading 
-    const [loading, setLoading] = React.useState(false);
+    const [loading, setLoading] = useState(false);
 
     //To validate key fields
     const validate = () => {
@@ -80,7 +79,7 @@ const LogInScreen = ({navigation}) => {
             
             //pass requestData as props to homescreen
             navigation.push("HomeScreen", requestData);
-            setInputs(userData.data.id)
+            setInputs(userData.data.id) // for UserContext
             Alert.alert("Logged in successfully");
             console.log("Logged in successfully", JSON.stringify({...userData, loggedIn: true}));
             //console.log(userData)
