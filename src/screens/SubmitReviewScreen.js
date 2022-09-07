@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState, useContext} from 'react';
 import { SafeAreaView, StyleSheet, ScrollView, Text, View, Alert } from "react-native";
 import COLORS from '../consts/colors';
 import ReviewInput from './SignInSignUp/components/ReviewInput';
@@ -6,29 +6,28 @@ import Button from './SignInSignUp/components/Button';
 import Loader from './SignInSignUp/components/Loader';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import API from './Api';
-import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { UserContext } from './Usercontext';
 
 const SubmitReviewScreen = ({navigation, route}) => {
-
+    
     const place = route.params;
-    const {inputs} = React.useContext(UserContext)
+    const {inputs} = useContext(UserContext)
 
-    const [submitReview, setSubmitReview] = React.useState({
-        location_id: "",
-        user_id: "",
+    const [submitReview, setSubmitReview] = useState({
+        location_id: place.id,
+        user_id: inputs,
         review: "",
     });
 
-    const [loading, setLoading] = React.useState(false);
-    const [errors, setErrors] = React.useState({});
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const validate = () => {
         let valid = true;
         if(!submitReview.review) {
             handleError("Please input a review", "review");
             valid = false;
-        } else if(user_id === null ){
+        } else if(inputs === null ){
             handleError("Please signup as a user before posting a review", "review");
             valid = false;
         } else if (valid) {
